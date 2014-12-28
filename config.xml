@@ -5,6 +5,8 @@
         versionCode = "1"
         version     = "0.1.0">
 
+    <icon src="img/icon.png" />
+
     <name>Showdown Teambuilder</name>
 
     <description>
