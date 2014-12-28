@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Dependencies -->
+	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-theme.css">
+
+	<!-- Styles -->
+	<link rel="stylesheet" type="text/css" href="css/template.css">
+</head>
+<body>
+	<section id="view"></section>
+
+	<script id="header" type="text/x-handlebars-template">
+		<div class="header">
+			{{#each buttons.left}}
+				{{{outerHTML}}}
+			{{/each}}
+			<span class="title">{{ title }}</span>
+			{{#each buttons.right}}
+				{{{outerHTML}}}
+			{{/each}}
+	 	</div>
+	</script>
+	<script type="text/x-handlebars-template" id="team-list">
+		<ul class="list-unstyled team-list">
+			{{#each teams}}
+				<li class="team">
+					<ul class="pokemons list-inline">
+						{{#each pokemons}}
+							<li><img src="http://play.pokemonshowdown.com/sprites/xyani/{{species}}.gif"></li>
+						{{/each}}
+					</ul>
+					<span class="name">{{name}}</span><br>
+					<span class="tier">{{tier}}</span>
+				</li>
+			{{/each}}
+		</ul>
+	</script>
+
+	<!-- Dependencies -->
+	<script type="text/javascript" src="lib/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="lib/handlebars-v2.0.0.js"></script>
+
+	<!--
+		Showdown stuff
+		TODO: Handle updates via git
+	-->
+	<script type="text/javascript">
+	var exports = {};
+	</script>
+	<script type="text/javascript" src="http://play.pokemonshowdown.com/data/pokedex.js"></script>
+
+	<!-- Models -->
+	<script type="text/javascript" src="js/models/Team.js"></script>
+	<script type="text/javascript" src="js/models/Nature.js"></script>
+
+	<!-- Views -->
+	<script type="text/javascript" src="js/views/Home.js"></script>
+
+	<!-- Core -->
+	<script type="text/javascript" src="js/teambuilder.js"></script>
+</body>
+</html>
