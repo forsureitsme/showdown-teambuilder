@@ -1,125 +1,101 @@
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,700,700italic,400italic);
-
-$lightblue: #32B2E2;
-$darkgray: #222222;
-
-html
+/* Panel under header */
+.ui-panel
 {
-	background: #000000;
-	background: linear-gradient(to bottom, #000000 0%,#333333 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#333333',GradientType=0 );
-	background-size: 100%;
-	min-height: 100%;
-
-	*
-	{
-		font-family: Roboto, sans-serif;
-		user-select: none;
-	}
+    top: 44px;
+    height: calc(100% - 44px);
 }
 
-body
+.ui-panel-animate.ui-panel-content-fixed-toolbar-position-left.ui-panel-content-fixed-toolbar-open.ui-panel-content-fixed-toolbar-display-push
 {
-	background: transparent;
-	margin-top: 46px;
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
 }
+/**/
 
-button
+// These are pretty much resets to jqm.css and the theme
+.ui-content,
+.ui-footer
 {
-	background: none;
-	border: none;
-	outline: none;
-}
-
-.rotate-90
-{
-	transform: rotate( 90deg );
-}
-
-.header
-{
-	height: 46px;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	background-color: black;
-	border-bottom: 2px solid $darkgray;
-
-	button.left,
-	button.right
+	.ui-page-theme-b & .ui-btn:active,
+	html & .ui-bar-b .ui-btn:active,
+	html .ui-body-b & .ui-btn:active,
+	html body & .ui-group-theme-b .ui-btn:active,
+	html head+body & .ui-btn.ui-btn-b:active
 	{
-		font-size: 16px;
-		padding: 0;
-		display: inline-block;
-		height: 44px;
-		width: 44px;
-
-		&:active
-		{
-			background-color: $lightblue;
-
-			&.disabled
-			{
-				background-color: transparent;
-			}
-		}
-
-		img
-		{
-			max-width: 32px;
-			max-height: 32px;
-			margin: 6px auto;
-		}
-	}
-
-	#view.home & button.left
-	{
-		width: 56px;
-	}
-
-	.title
-	{
-		margin: 0;
-		height: 44px;
-		line-height: 44px;
-		font-size: 16px;
-		vertical-align: middle;
+		background-color: #7CC4E7;
 		color: white;
 	}
 }
 
-.team-list
+.ui-page-theme-b .ui-btn.ui-btn-active,
+html .ui-bar-b .ui-btn.ui-btn-active,
+html .ui-body-b .ui-btn.ui-btn-active,
+html body .ui-group-theme-b .ui-btn.ui-btn-active,
+html head+body .ui-btn.ui-btn-b.ui-btn-active
 {
-	.team
+	background: #333;
+	border-color: #1F1F1F;
+	color: white;
+	text-shadow: 0 1px 0 #111;
+}
+
+html .ui-filterable+.ui-listview, html .ui-filterable.ui-listview
+{
+	margin-top: 0;
+}
+
+.ui-listview .ui-li-has-thumb > img:first-child,
+.ui-listview .ui-li-has-thumb>.ui-btn > img:first-child,
+.ui-listview .ui-li-has-thumb .ui-li-thumb
+{
+	max-height: 6em;
+	max-width: 6em;
+	margin-left: 0.85em;
+}
+
+// Now, these are my styles
+*,
+body,
+input,
+select,
+textarea,
+button,
+.ui-btn
+{
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	font-family: Roboto, sans-serif;
+}
+
+.uppercase
+{
+	text-transform: uppercase;
+}
+
+.ui-content
+{
+    -webkit-overflow-scrolling: touch;
+}
+
+.ui-page-theme-b .ui-header .ui-btn,
+.ui-page-theme-b .ui-header .ui-btn:active,
+.ui-page-theme-b .ui-header .ui-btn:visited //WTF you guys still use this?
+{
+	color: white;
+}
+
+#home
+{
+	.ui-content
 	{
-		height: 80px;
-		position: relative;
-		padding: 15px;
-		font-size: large;
-		border-bottom: 1px solid gray;
+    	padding-top: 0;
+	}
 
-		&:active
-		{
-			background-color: $lightblue;
-		}
-
-		.name
-		{
-			color: white;
-			font-weight: bold;
-		}
-
-		.pokemons
-		{
-			position: absolute;
-			top: 5px;
-			right: 0;
-
-			img
-			{
-				height: 70px;
-			}
-		}
+	.ui-filterable
+	{
+		display: none;
 	}
 }

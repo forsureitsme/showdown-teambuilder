@@ -1,43 +1,30 @@
-var Team = function()
+var Team = function( id )
 {
-	this.init = function()
+	this.data = false;
+
+	this.init = function( id )
 	{
-		localStorage.teams = JSON.stringify([
-			{
-				name: 'Foo',
-				tier: 'OU',
-				pokemons: [
-					{
-						species: "landorus-therian",
-						gender: 'm',
-						item: 234,
-						ability: 0,
-						evs: [252,4,252,0,0,0],
-						nature: 11,
-						moves: [317,89,14,164]
-					},
-					{
-						species: "sceptile",
-						gender: 'm',
-						item: 234,
-						ability: 0,
-						evs: [252,4,252,0,0,0],
-						nature: 11,
-						moves: [317,89,14,164]
-					}
-				]
-			}
-		]);
+		this.list = JSON.parse( localStorage.teams );
+		this.list_parsed = this.parse( JSON.parse( localStorage.teams ) );
+
+		if ( !isNaN( id ) && this.list_parsed[ id ] )
+		{
+			this.data = this.list_parsed[ id ];
+			this.data.id = id;
+		}
+		else
+		{
+			this.data = {
+				id: this.list.length,
+				name: '',
+				tier: 'none',
+				pokemons: []
+			};
+		}
 	}
 
-	this.list = function()
+	this.parse = function( teams )
 	{
-		return { teams: this.parse( localStorage.teams ) };
-	}
-
-	this.parse = function()
-	{
-		var teams = JSON.parse( localStorage.teams );
 		teams.forEach
 		(
 			function( team, i )
@@ -46,19 +33,27 @@ var Team = function()
 				(
 					function( pokemon, j )
 					{
-						teams[ i ].pokemons[ j ].species = teams[ i ].pokemons[ j ].species.toLowerCase();
-						$.each
+						teams[ i ].pokemons[ j ].nature = new Nature( pokemon.nature ).name;
+						teams[ i ].pokemons[ j ].ability = exports.BattlePokedex[ pokemon.species ].abilities[ pokemon.ability ];
+						pokemon.moves.forEach
 						(
-							exports.BattlePokedex,
-							function()
+							function( move, k )
 							{
-								if ( this.species.toLowerCase() == teams[ i ].pokemons[ j ].species.toLowerCase() )
-								{
-									teams[ i ].pokemons[ j ].ability = this.abilities[ teams[ i ].pokemons[ j ].ability ];
-									return false;
-								};
+								teams[ i ].pokemons[ j ].moves[ k ] = exports.BattleMovedex[ move ].name;
 							}
 						);
+
+						if ( exports.BattleItems[ pokemon.item ].megaEvolves && exports.BattleItems[ pokemon.item ].megaEvolves.toLowerCase() == pokemon.species.toLowerCase() )
+						{
+							teams[ i ].pokemons[ j ].sprite_name = exports.BattleItems[ pokemon.item ].megaStone.toLowerCase();
+						}
+						else
+						{
+							teams[ i ].pokemons[ j ].sprite_name = exports.BattlePokedex[ pokemon.species ].species;
+						}
+
+						teams[ i ].pokemons[ j ].item = exports.BattleItems[ pokemon.item ].name;
+						teams[ i ].pokemons[ j ].species = exports.BattlePokedex[ pokemon.species ].species;
 					}
 				);
 			}
@@ -66,5 +61,87 @@ var Team = function()
 		return teams;
 	}
 
-	this.init();
+	this.unparse = function( team )
+	{
+		if ( team.pokemons )
+		{
+			team.pokemons.forEach
+			(
+				function( pokemon, i )
+				{
+					// Unparse Nature
+					team.pokemons[ i ].nature = new Nature().from_name( pokemon.nature ).id;
+
+					var dexmon = {};
+					$.each( exports.BattlePokedex,
+						function( species )
+						{
+							if ( this.species == pokemon.species )
+							{
+								// Unparse Name
+								team.pokemons[ i ].species = species;
+
+								// Set pokemon for the following unparses
+								dexmon = this;
+							};
+						}
+					);
+
+					// Unparse Ability
+					$.each( dexmon.abilities,
+						function( ability )
+						{
+							if ( this == pokemon.ability )
+							{
+								team.pokemons[ i ].ability = ability;
+							};
+						}
+					);
+
+					// Unparse Item
+					$.each( exports.BattleItems,
+						function( item )
+						{
+							if ( this.name == pokemon.item )
+							{
+								team.pokemons[ i ].item = item;
+							};
+						}
+					);
+
+					// Unparse Moves
+					$.each( exports.BattleMovedex,
+						function( move )
+						{
+							var index = pokemon.moves.indexOf( this.name );
+							if ( index > -1 )
+							{
+								team.pokemons[ i ].moves[ index ] = move;
+							};
+						}
+					);
+
+				}
+			);
+			return team;
+		};
+	}
+
+	this.save = function()
+	{
+		var id = this.data.id;
+
+		// remove unecessary data when saving
+		this.data.id = undefined;
+		this.data.sprite_name = undefined;
+		//
+
+		this.list[ id ] = this.unparse( this.data );
+		localStorage.teams = JSON.stringify( this.list );
+
+		// restore id for following saves
+		this.data.id = id;
+	}
+
+	this.init( id );
 }
