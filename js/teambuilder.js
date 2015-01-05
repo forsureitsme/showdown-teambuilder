@@ -2,6 +2,7 @@ var teambuilder = {
 	templates: {
 		home: Handlebars.compile( $( '#tpl-home' ).html() ),
 		team: Handlebars.compile( $( '#tpl-team' ).html() ),
+		pokemon: Handlebars.compile( $( '#tpl-pokemon' ).html() ),
 	},
 
 	debug: true,
@@ -186,18 +187,18 @@ var teambuilder = {
 	{
 		teambuilder.log( 'teambuilder.binds' );
 
-		$( '[href="#"]' ).bind
+		$( document ).on
 		(
 			'vclick',
+			'[href="#"]',
 			function( event )
 			{
 				event.preventDefault();
 			}
-		);
-
-		$( '*' ).bind
+		).on
 		(
 			'hover focus',
+			'*',
 			function( event )
 			{
 				event.preventDefault();
@@ -359,18 +360,7 @@ var teambuilder = {
 
 			var team_data = new Team( params.id ).data;
 			$( '#team [data-role="content"]' ).html( teambuilder.templates.team( team_data ) ).enhanceWithin();
-			if ( team_data.pokemons.length < 6 )
-			{
-				$( '#team [data-role="footer"]' ).show();
-			}
-			else
-			{
-				$( '#team [data-role="footer"]' ).hide();
-			}
-			if ( $( '#team select[name="team-tier"]' ).attr( 'data-tier' ) )
-			{
-				$( '#team select[name="team-tier"]' ).val( $( '#team select[name="team-tier"]' ).attr( 'data-tier' ) ).selectmenu( 'refresh' );
-			};
+			$( '#team select[name="team-tier"]' ).selectmenu( 'refresh' );
 
 			teambuilder.team.binds();
 		},
@@ -410,19 +400,62 @@ var teambuilder = {
 	},
 
 	pokemon: {
+		swiper: undefined,
+
 		init: function()
 		{
-			teambuilder.log( 'teambuilder.team.init' );
+			teambuilder.log( 'teambuilder.pokemon.init' );
 		},
 
-		load: function()
+		load: function( params )
 		{
-			teambuilder.log( 'teambuilder.team.load' );
+			teambuilder.log( 'teambuilder.pokemon.load' );
+
+			var pokemon_data = new Pokemon( params.team, params.index ).data;
+			$( '#pokemon [data-role="content"]' ).html( teambuilder.templates.pokemon( pokemon_data ) ).enhanceWithin();
+			$( '#pokemon [data-role="header"] a' ).attr( 'href', '#team?id=' + params.team );
+
+			if ( teambuilder.pokemon.swiper )
+			{
+				teambuilder.pokemon.swiper.destroy( true );
+			};
+			setTimeout
+			(
+				function()
+				{
+					teambuilder.pokemon.swiper = $( '#pokemon .swiper-container' ).swiper
+					(
+						{
+							mode: 'horizontal',
+							loop: false,
+							preventLinksPropagation: true,
+							noSwiping: true,
+						}
+					);
+
+					// Removing swipe from slider so people can swipe the slider without swiping the page
+					$( '#pokemon [data-role="content"] .ui-slider *' ).addClass( 'swiper-no-swiping' );
+					teambuilder.pokemon.binds();
+				}, 200 //Hah! You need to finish stack first, uh?
+			);
+
+
 		},
 
 		binds: function()
 		{
-			teambuilder.log( 'teambuilder.team.binds' );
+			teambuilder.log( 'teambuilder.pokemon.binds' );
+
+			$( '#pokemon [data-role="navbar"] a' ).unbind( '.nav-swipe' )
+			.bind(
+				'vclick.nav-swipe',
+				function()
+				{
+					var slide_index = $( this ).closest( 'li' ).index();
+					teambuilder.log( 'nav-swipe: ' + slide_index );
+					teambuilder.pokemon.swiper.swipeTo( slide_index );
+				}
+			);
 		},
 	},
 

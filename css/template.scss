@@ -70,6 +70,11 @@ button,
 	font-family: Roboto, sans-serif;
 }
 
+.ui-overlay-b
+{
+	background: #000;
+}
+
 .uppercase
 {
 	text-transform: uppercase;
@@ -97,5 +102,21 @@ button,
 	.ui-filterable
 	{
 		display: none;
+	}
+}
+
+#pokemon
+{
+	.ui-content
+	{
+    	padding: 0;
+    	min-height: inherit;
+	}
+
+	.swiper-container,
+	.swiper-slide
+	{
+		width: 100%;
+    	min-height: inherit;
 	}
 }
